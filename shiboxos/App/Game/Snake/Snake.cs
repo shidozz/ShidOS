@@ -9,6 +9,7 @@ using Appe = shiboxos.utils.App;
 using Kern = shiboxos.Kernel;
 using Cosmos.System;
 using System.Threading;
+using Cosmos.System.Graphics.Fonts;
 
 namespace shiboxos.App.Game.Snake
 {
@@ -25,12 +26,13 @@ namespace shiboxos.App.Game.Snake
 
         public Random rand = new Random();
 
-        public bool goLeft, goRight, goDown, goUp;
-        
-
+        public bool goLeft, goRight, goDown, goUp = false;
+        public PCScreenFont font;
+        public bool isStarted;
 
         public Snake(string name = "Snake", string description = "Un Jeu superbe", bool isOpen = false) : base(name, description, isOpen)
         {
+            font = PCScreenFont.LoadFont(Kern.BFont);
         }
 
 
@@ -39,8 +41,6 @@ namespace shiboxos.App.Game.Snake
             new Setting();
             RestartGame();
             Kern.windows = false;
-            isOpen = !isOpen;
-            Kern.PrintDebug("Snake is starting");
         }
 
         public void Update()
@@ -49,34 +49,28 @@ namespace shiboxos.App.Game.Snake
             KeyEvent key;
             if (KeyboardManager.TryReadKey(out key))
             {
-                if (key.Key == ConsoleKeyEx.UpArrow && Setting.direction != "down")
+                if (key.Key == ConsoleKeyEx.UpArrow && !goDown)
                 {
                     goUp = true;
-                    goDown = false;
                     goLeft = false;
                     goRight = false;
                 }
-                if (key.Key == ConsoleKeyEx.LeftArrow && Setting.direction != "right")
+                if (key.Key == ConsoleKeyEx.LeftArrow && !goRight)
                 {
                     goUp = false;
                     goDown = false;
                     goLeft = true;
-                    goRight = false;
                 }
-                if (key.Key == ConsoleKeyEx.DownArrow && Setting.direction != "up")
+                if (key.Key == ConsoleKeyEx.DownArrow && !goUp)
                 {
-                    
-                    goUp = false;
                     goDown = true;
                     goLeft = false;
                     goRight = false;
                 }
-                if (key.Key == ConsoleKeyEx.RightArrow && Setting.direction != "left")
+                if (key.Key == ConsoleKeyEx.RightArrow && !goLeft)
                 {
-
                     goUp = false;
                     goDown = false;
-                    goLeft = false;
                     goRight = true;
                 }
             }
@@ -91,49 +85,38 @@ namespace shiboxos.App.Game.Snake
                 {
                     snakeColour.Color = Color.LightBlue;
                 }
-                Kern.canvas.DrawFilledEllipse(snakeColour, new(snake[i].X * Setting.Width, snake[i].Y * Setting.Height), Setting.Width, Setting.Height);
+                Kern.canvas.DrawFilledRectangle(snakeColour, new(snake[i].X * Setting.Width, snake[i].Y * Setting.Height), Setting.Width, Setting.Height);
             }
-            Kern.canvas.DrawFilledEllipse(new(Color.DarkRed), new(food.X * Setting.Width, food.Y * Setting.Height), Setting.Width, Setting.Height);
+            Kern.canvas.DrawFilledRectangle(new(Color.DarkRed), new(food.X * Setting.Width, food.Y * Setting.Height), Setting.Width, Setting.Height);
             
-            Kern.canvas.Display();
-            if (goLeft)
-            {
-                Setting.direction = "left";
-            }
-            if (goRight)
-            {
-                Setting.direction = "right";
-            }
-            if (goUp)
-            {
-                Setting.direction = "up";
-            }
-            if (goDown)
-            {
-                Setting.direction = "down";
-            }
+                
 
 
             for (int i = (snake.Count -1); i >=0 ; i--)
             {
                 if(i == 0)
                 {
-                    switch (Setting.direction)
+
+                    if (goLeft)
                     {
-                        case "left":
-                            snake[i].X--;
-                            break;
-                        case "right":
-                            snake[i].X++;
-                            break;
-                        case "up":
-                            snake[i].Y--;
-                            break;
-                        case "down":
-                            snake[i].Y++;
-                            break;
+                        snake[i].X--;
                     }
-                
+                    if (goRight)
+                    {
+                        snake[i].X++;
+                    }
+                    if (goUp)
+                    {
+                        snake[i].Y--;
+                    }
+                    if (goDown)
+                    {
+                        snake[i].Y++;
+                    }
+                    if (snake[i].X == food.X && snake[i].Y == food.Y)
+                    {
+                        EatFood();
+                    }
                     if (snake[i].X < 0)
                     {
                         snake[i].X = maxWidth;
@@ -156,18 +139,40 @@ namespace shiboxos.App.Game.Snake
                     snake[i].X = snake[i - 1].X;
                     snake[i].Y = snake[i - 1].Y;
                 }
+                for(int j = 0; j < snake.Count; j++)
+                {
+                    if (snake[i].X == snake[j].X && snake[i].Y == snake[j].Y)
+                    {
+                        GameOver();
+                    }
+                }
             }
-           
-
+            string vScore = "Votre Score est de " + Convert.ToString(score) + " points";
+            Kern.canvas.DrawString(vScore, font, new(Color.White), new((640 / 2) - ((vScore.Length / 2) * 8) ,20));
+            Kern.canvas.Display();
+            Thread.Sleep(1000 / 15);
         }
         private void EatFood()
         {
+            score += 1;
+            food = new Circle { X = rand.Next(2, maxWidth), Y = rand.Next(2, maxHeight) };
         }
         private void RestartGame()
         {
-            maxWidth = Kern.canvas.Mode.Columns / Setting.Width - 1;
-            maxHeight = Kern.canvas.Mode.Rows / Setting.Height - 1;
+            isOpen = true;
+            if (Kern.isInitialized) {
+                maxWidth = Kern.canvas.Mode.Columns / Setting.Width - 1;
+                maxHeight = Kern.canvas.Mode.Rows / Setting.Height - 1;
+            }
+            else
+            {
 
+                Kern.canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(640, 480, ColorDepth.ColorDepth32));
+                Kern.canvas.Clear(Color.Blue);
+                Kern.isInitialized = true;
+                maxWidth = Kern.canvas.Mode.Columns / Setting.Width - 1;
+                maxHeight = Kern.canvas.Mode.Rows / Setting.Height - 1;
+            }
             snake.Clear();
 
             score = 0;
@@ -178,6 +183,7 @@ namespace shiboxos.App.Game.Snake
 
             for(int i = 0; i < 10; i++)
             {
+
                 Circle body = new();
                 snake.Add(body);
             }
@@ -186,7 +192,8 @@ namespace shiboxos.App.Game.Snake
         }
         private void GameOver()
         {
-
+            isOpen = false;
+            Kern.windows = true;
         }
         public void Stop()
         {
