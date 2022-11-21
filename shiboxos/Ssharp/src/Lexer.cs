@@ -12,101 +12,107 @@ namespace shiboxos.Ssharp.src
         public struct lexer_T
         {
             public char c;
-            public uint i;
-            public char[] contents;
-            public lexer_T(char c, uint i, char[] contents)
+            public int i;
+            public string contents;
+            public int len;
+            public lexer_T(string contents, int len)
             {
-                this.c = c;
-                this.i = i;
-                this.contents = contents;
+                this.c = contents[0];
+                this.i = 0;
+                // hacky shit ikr
+                this.contents = contents + "E";
+                this.len = len + 1;
             }
         }
-        public lexer_T Init_lexer(char[] contents)
+        public static lexer_T Init_lexer(string contents)
         {
-            lexer_T lexer = new();
-            lexer.i = 0;
-            lexer.c = contents[lexer.i];
-            lexer.contents = contents;
+            lexer_T lexer = new(contents, contents.Length);
             return lexer;
         }
-        public void Lexer_advance(lexer_T lexer)
+        public static void Lexer_advance(ref lexer_T lexer)
         {
-            if (lexer.c != (char)0 && lexer.i < lexer.contents.ToString().Length)
-            {
-                lexer.i++;
-                lexer.c = lexer.contents[lexer.i];
-            }
+            lexer.i++;
+            lexer.c = lexer.contents[lexer.i];
         }
 
-        public Token_T Lexer_advance_with_token(lexer_T lexer, Token_T token)
+        public static Token_T Lexer_advance_with_token(ref lexer_T lexer, Token_T token)
         {
-            Lexer_advance(lexer);
+            if (lexer.i == lexer.len - 1)
+            {
+                return Init_Void_Token();
+            }
+            Lexer_advance(ref lexer);
             return token;
         }
-        public void Lexer_skip_whitespace(lexer_T lexer)
+        public static void Lexer_skip_whitespace(ref lexer_T lexer)
         {
-            while (lexer.c != (char)0 || lexer.c == 10)
+            while (lexer.c == ' ' || lexer.c == '\n' || lexer.c == '\0')
             {
-                Lexer_advance(lexer);
+                Lexer_advance(ref lexer);
             }
         }
-        public Token_T Lexer_get_next_token(lexer_T lexer)
+        public static Token_T Lexer_get_next_token(ref lexer_T lexer)
         {
-            while (lexer.c != (char)0 && lexer.i < lexer.contents.ToString().Length)
+            Lexer_skip_whitespace(ref lexer);
+            string val = string.Empty;
+            if (char.IsDigit(lexer.c))
             {
-                if (lexer.c == ' ' || lexer.c == 10)
-                    Lexer_skip_whitespace(lexer);
-                if (char.IsDigit(lexer.c))
-                {
-                    return Lexer_collect_id(lexer);
-                }
-                if (lexer.c == '"')
-                {
-                    return Lexer_collect_string(lexer);
-                }
-
-                switch (lexer.c)
-                {
-                    case '=':
-                        return Lexer_advance_with_token(lexer, new(Token_T.Type.Token_EQUALS, lexer.c.ToString()));
-                    case ';':
-                        return Lexer_advance_with_token(lexer, new(Token_T.Type.Token_SEMI, lexer.c.ToString()));
-                    case '(':
-                        return Lexer_advance_with_token(lexer, new(Token_T.Type.Token_LPARENT, lexer.c.ToString()));
-                    case ')':
-                        return Lexer_advance_with_token(lexer, new(Token_T.Type.Token_RPARENT, lexer.c.ToString()));
-
-                }
+                return Lexer_collect_id(ref lexer);
             }
-            Token t = new();
-            return t.Init_Void_Token();
+            if (lexer.c == '"')
+            {
+                return Lexer_collect_string(ref lexer);
+            }
+
+            switch (lexer.c)
+            {
+                case '=':
+                    return Lexer_advance_with_token(ref lexer, new(Token_T.Type.Token_EQUALS, lexer.c.ToString()));
+                case ';':
+                    return Lexer_advance_with_token(ref lexer, new(Token_T.Type.Token_SEMI, lexer.c.ToString()));
+                case '(':
+                    return Lexer_advance_with_token(ref lexer, new(Token_T.Type.Token_LPARENT, lexer.c.ToString()));
+                case ')':
+                    return Lexer_advance_with_token(ref lexer, new(Token_T.Type.Token_RPARENT, lexer.c.ToString()));
+
+            }
+            while (lexer.i < lexer.len - 1 && lexer.c.ToString().Length == 1 && lexer.c != '\0' && lexer.c != ' ' && lexer.c != '\n' && lexer.c != '=' && lexer.c != ';' && lexer.c != '(' && lexer.c != ')' && lexer.c != '"')
+            {
+                val += lexer.c;
+                Lexer_advance(ref lexer);
+            }
+            if (lexer.i == lexer.len - 1)
+            {
+                return Init_Void_Token();
+            }
+            return new Token_T(Token_T.Type.Token_KEYWORD, val);
         }
-        public Token_T Lexer_collect_string(lexer_T lexer)
+        public static Token_T Lexer_collect_string(ref lexer_T lexer)
         {
+            Lexer_advance(ref lexer);
             string value = string.Empty;
             while (lexer.c != '"')
             {
                 value += lexer.c;
-                Lexer_advance(lexer);
+                Lexer_advance(ref lexer);
             }
-            Lexer_advance(lexer);
+            Lexer_advance(ref lexer);
             return new(Token_T.Type.Token_STRING, value);
         }
-        public string Lexer_get_current_as_string(lexer_T lexer)
+        public static string Lexer_get_current_as_string(lexer_T lexer)
         {
-            string str = ((char)0).ToString();
+            string str = string.Empty;
             str += lexer.c;
-            str += ((char)0);
             return str;
         }
 
-        public Token_T Lexer_collect_id(lexer_T lexer)
+        public static Token_T Lexer_collect_id(ref lexer_T lexer)
         {
-            string value = ((char)0).ToString();
+            string value = string.Empty;
             while (char.IsDigit(lexer.c))
             {
                 value += lexer.c;
-                Lexer_advance(lexer);
+                Lexer_advance(ref lexer);
             }
             return new(Token_T.Type.Token_ID, value);
         }

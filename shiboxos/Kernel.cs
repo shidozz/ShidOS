@@ -21,6 +21,7 @@ using Appli = shiboxos.utils.App;
 using shiboxos.Ssharp.src;
 using System.IO;
 //using shiboxos.App.Game;
+using static shiboxos.Ssharp.src.main;
 
 namespace shiboxos
 {
@@ -96,9 +97,9 @@ namespace shiboxos
                     }*/
                     if (cmd.ToLower() == "ssharp")
                     {
-                        main main = new();
+                        main.Start();
                     }
-                    if (cmd.ToLower() == "snake")
+                    else if (cmd.ToLower() == "snake")
                     {
                         SnakeApp.Start();
                     }

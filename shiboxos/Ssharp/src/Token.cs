@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using shiboxos.Ssharp.src;
+using static shiboxos.Ssharp.src.main;
+using static shiboxos.Ssharp.src.Lexer;
 
 namespace shiboxos.Ssharp.src
 {
@@ -11,14 +12,16 @@ namespace shiboxos.Ssharp.src
     {
         public struct Token_T
         {
-            public enum Type{
+            public enum Type
+            {
                 Token_ID,
                 Token_EQUALS,
                 Token_STRING,
                 Token_SEMI,
                 Token_LPARENT,
                 Token_RPARENT,
-                Token_OEF
+                Token_OEF,
+                Token_KEYWORD
             }
             public Type type;
             public string value;
@@ -29,11 +32,11 @@ namespace shiboxos.Ssharp.src
             }
         }
 
-        public Token_T Init_Token(int type, string value)
+        public static Token_T Init_Token(int type, string value)
         {
             return new((Token_T.Type)type, value);
         }
-        public Token_T Init_Void_Token()
+        public static Token_T Init_Void_Token()
         {
             return new(Token_T.Type.Token_OEF, "");
         }

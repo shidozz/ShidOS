@@ -21,7 +21,7 @@
         <CompressionType>None</CompressionType>
         <RemoveBootDebugOutput>False</RemoveBootDebugOutput>
         <ExtractMapFile>False</ExtractMapFile>
-        <DebugEnabled>True</DebugEnabled>
+        <DebugEnabled>False</DebugEnabled>
     </PropertyGroup>
 
     <ItemGroup>
