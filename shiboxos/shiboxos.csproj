@@ -18,10 +18,11 @@
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
         <VMWareEdition>Player</VMWareEdition>
-        <CompressionType>None</CompressionType>
+        <CompressionType>Gzip</CompressionType>
         <RemoveBootDebugOutput>False</RemoveBootDebugOutput>
         <ExtractMapFile>False</ExtractMapFile>
         <DebugEnabled>False</DebugEnabled>
+        <BinFormat>Bin</BinFormat>
     </PropertyGroup>
 
     <ItemGroup>

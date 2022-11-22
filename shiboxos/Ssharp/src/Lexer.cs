@@ -24,6 +24,9 @@ namespace shiboxos.Ssharp.src
                 this.len = len + 1;
             }
         }
+
+        public static string[] Keywords = new string[] { "var", "let", "const", "print", "clear" }; 
+
         public static lexer_T Init_lexer(string contents)
         {
             lexer_T lexer = new(contents, contents.Length);
@@ -46,7 +49,7 @@ namespace shiboxos.Ssharp.src
         }
         public static void Lexer_skip_whitespace(ref lexer_T lexer)
         {
-            while (lexer.c == ' ' || lexer.c == '\n' || lexer.c == '\0')
+            while (lexer.c == ' ' || lexer.c == '\n' || lexer.c == '\0' || lexer.c == '\r')
             {
                 Lexer_advance(ref lexer);
             }
@@ -55,15 +58,20 @@ namespace shiboxos.Ssharp.src
         {
             Lexer_skip_whitespace(ref lexer);
             string val = string.Empty;
-            if (char.IsDigit(lexer.c))
+            if (char.IsNumber(lexer.c))
             {
-                return Lexer_collect_id(ref lexer);
+                return Lexer_collect_num(ref lexer);
             }
             if (lexer.c == '"')
             {
                 return Lexer_collect_string(ref lexer);
             }
 
+
+            if (char.IsDigit(lexer.c))
+            {
+                return Lexer_collect_id(ref lexer);
+            }
             switch (lexer.c)
             {
                 case '=':
@@ -74,9 +82,8 @@ namespace shiboxos.Ssharp.src
                     return Lexer_advance_with_token(ref lexer, new(Token_T.Type.Token_LPARENT, lexer.c.ToString()));
                 case ')':
                     return Lexer_advance_with_token(ref lexer, new(Token_T.Type.Token_RPARENT, lexer.c.ToString()));
-
             }
-            while (lexer.i < lexer.len - 1 && lexer.c.ToString().Length == 1 && lexer.c != '\0' && lexer.c != ' ' && lexer.c != '\n' && lexer.c != '=' && lexer.c != ';' && lexer.c != '(' && lexer.c != ')' && lexer.c != '"')
+            while (lexer.i < lexer.len - 1 && lexer.c.ToString().Length == 1 && lexer.c != '\r' && lexer.c != '\0' && lexer.c != ' ' && lexer.c != '\n' && lexer.c != '=' && lexer.c != ';' && lexer.c != '(' && lexer.c != ')' && lexer.c != '"')
             {
                 val += lexer.c;
                 Lexer_advance(ref lexer);
@@ -85,7 +92,7 @@ namespace shiboxos.Ssharp.src
             {
                 return Init_Void_Token();
             }
-            return new Token_T(Token_T.Type.Token_KEYWORD, val);
+            return new Token_T(Token_T.Type.Token_ID, val);
         }
         public static Token_T Lexer_collect_string(ref lexer_T lexer)
         {
@@ -109,12 +116,22 @@ namespace shiboxos.Ssharp.src
         public static Token_T Lexer_collect_id(ref lexer_T lexer)
         {
             string value = string.Empty;
-            while (char.IsDigit(lexer.c))
+            while (char.IsLetterOrDigit(lexer.c))
             {
                 value += lexer.c;
                 Lexer_advance(ref lexer);
             }
             return new(Token_T.Type.Token_ID, value);
+        }
+        public static Token_T Lexer_collect_num(ref lexer_T lexer)
+        {
+            string value = string.Empty;
+            while (char.IsNumber(lexer.c))
+            {
+                value += lexer.c;
+                Lexer_advance(ref lexer);
+            }
+            return new(Token_T.Type.Token_NUMBER, value);
         }
     }
 }

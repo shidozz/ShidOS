@@ -21,7 +21,8 @@ namespace shiboxos.Ssharp.src
                 Token_LPARENT,
                 Token_RPARENT,
                 Token_OEF,
-                Token_KEYWORD
+                Token_KEYWORD,
+                Token_NUMBER
             }
             public Type type;
             public string value;
