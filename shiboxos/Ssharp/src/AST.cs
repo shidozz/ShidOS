@@ -8,7 +8,7 @@ namespace shiboxos.Ssharp.src
 {
     internal class AST
     {
-        public struct AST_T
+        public class AST_T
         {
             public enum Type
             {
