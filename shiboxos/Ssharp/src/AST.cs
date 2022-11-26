@@ -45,10 +45,10 @@ namespace shiboxos.Ssharp.src
             public int compound_size;
 
         };
-        public static AST_T init_ast(int type)
+        public static AST_T init_ast(AST_T.Type type)
         {
             AST_T ast = new AST_T();
-            ast.type = (AST_T.Type)type;
+            ast.type = type;
             return ast;
         }
     }

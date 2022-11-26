@@ -20,8 +20,8 @@
         <VMWareEdition>Player</VMWareEdition>
         <CompressionType>None</CompressionType>
         <RemoveBootDebugOutput>False</RemoveBootDebugOutput>
-        <ExtractMapFile>False</ExtractMapFile>
-        <DebugEnabled>False</DebugEnabled>
+        <ExtractMapFile>True</ExtractMapFile>
+        <DebugEnabled>True</DebugEnabled>
         <BinFormat>Elf</BinFormat>
         <CompileVBEMultiboot>False</CompileVBEMultiboot>
     </PropertyGroup>

@@ -13,14 +13,8 @@ namespace shiboxos.Ssharp.src
     {
         public static void Start()
         {
-            k.mDebugger.Send("REUSSI (file: Main.cs ligne: 22)");
-            lexer_T lexer = Init_lexer(@"
-                var name = ""john doe"";
-                var nombre = 10;
-                print(name);
-            ");
+            lexer_T lexer = Init_lexer("var name = \"john doe\";\nvar nombre = 10;\nprint(name);");
             Token_T token = Init_Void_Token();
-            k.mDebugger.Send("REUSSI (file: Main.cs ligne: 21)");
             while ((token = Lexer_get_next_token(ref lexer)).type != Token_T.Type.Token_OEF)
             {
                 if (token.type == Token_T.Type.Token_ID) {
@@ -33,7 +27,6 @@ namespace shiboxos.Ssharp.src
                     }
                 }
             }
-            k.mDebugger.Send("REUSSI (file: Main.cs ligne: 23)");
             parser_T parser = init_parser(ref lexer);
             k.mDebugger.Send("REUSSI (file: Main.cs ligne: 36)");
             AST_T root = parser_parse(ref parser);
