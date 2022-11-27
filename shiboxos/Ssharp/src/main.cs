@@ -13,9 +13,9 @@ namespace shiboxos.Ssharp.src
     {
         public static void Start()
         {
-            lexer_T lexer = Init_lexer("var name = \"john doe\";\nvar nombre = 10;\nprint(name);");
+            lexer_T lexer = Init_lexer(@"var name = salam");
             Token_T token = Init_Void_Token();
-            while ((token = Lexer_get_next_token(ref lexer)).type != Token_T.Type.Token_OEF)
+            /*while ((token = Lexer_get_next_token(ref lexer)).type != Token_T.Type.Token_OEF)
             {
                 if (token.type == Token_T.Type.Token_ID) {
                     foreach(string kw in Keywords)
@@ -26,12 +26,12 @@ namespace shiboxos.Ssharp.src
                         }
                     }
                 }
-            }
+            }*/
             parser_T parser = init_parser(ref lexer);
             k.mDebugger.Send("REUSSI (file: Main.cs ligne: 36)");
             AST_T root = parser_parse(ref parser);
             k.mDebugger.Send("REUSSI (file: Main.cs ligne: 38)");
-            Console.WriteLine("root: " + root);
+            Console.WriteLine("root: " + (int) root.type);
             k.mDebugger.Send("REUSSI (file: Main.cs ligne: 40)");
         }
 

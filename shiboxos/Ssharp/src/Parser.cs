@@ -30,10 +30,10 @@ namespace shiboxos.Ssharp.src
         }
         public static void parser_eat(ref parser_T parser, int token_type)
         {
-            if (parser.current_token.type != (Token_T.Type)token_type)
+            if (parser.current_token.type == (Token_T.Type)token_type)
             {
                 parser.current_token = Lexer_get_next_token(ref parser.lexer);
-                k.mDebugger.Send("REUSSI (file: Main.cs, ligne: 32)");
+                k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 32)");
             }
             else
             {
@@ -108,41 +108,52 @@ namespace shiboxos.Ssharp.src
         {
             char[] token_value = parser.current_token.value.ToCharArray();
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 107)");
+            
             parser_eat(ref parser,(int) Token_T.Type.Token_ID);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 109)");
+
             if (parser.current_token.type == Token_T.Type.Token_LPARENT)
                 return parser_parse_function(ref parser);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 112)");
 
             AST_T ast_variable = init_ast(AST_T.Type.AST_VARIABLE);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 114)");
+            
             ast_variable.variable_name = token_value;
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 116)");
+            
             return ast_variable;
         }
         public static AST_T parser_parse_variable_definition(ref parser_T parser)
         {
             parser_eat(ref parser, (int)Token_T.Type.Token_ID);
             k.mDebugger.Send("Creation du Token de Type Identifier");
+            
             char[] variable_definition_name = parser.current_token.value.ToCharArray();
             k.mDebugger.Send("Affectation du Nom " + parser.current_token.value + " pour l'Identifier");
+            
             parser_eat(ref parser, (int)Token_T.Type.Token_ID);
+            
             parser_eat(ref parser, (int)Token_T.Type.Token_EQUALS);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 128)");
+            
             AST_T variable_definition_value = parser_parse_expr(ref parser);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 130)");
+            
             AST_T variable_definition = init_ast(AST_T.Type.AST_VARIABLE_DEFINITION);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 132)");
+            
             variable_definition.variable_definition_name = variable_definition_name;
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 134)");
+            
             variable_definition.variable_definition_value = variable_definition_value;
-            k.mDebugger.Send("Affectation d'une valeur " + variable_definition.variable_definition_value.ToString() + " pour l'Identifier");
-            k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 136)");
-            return new();
+            k.mDebugger.Send("Affectation d'une valeur de type " + (int) variable_definition.variable_definition_value.type + " pour l'Identifier");
+            
+            return variable_definition;
         }
         public static AST_T parser_parse_id(ref parser_T parser)
         {
-            if(parser.current_token.value.ToLower() != "var")
+            if((parser.current_token.value.ToLower() == "var") == false)
             {
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 142)");
                 return parser_parse_variable_definition(ref parser);
