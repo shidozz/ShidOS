@@ -28,16 +28,16 @@ namespace shiboxos.Ssharp.src
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 27)");
             return parser;
         }
-        public static void parser_eat(ref parser_T parser, int token_type)
+        public static void parser_eat(ref parser_T parser, Token_T.Type token_type)
         {
-            if (parser.current_token.type == (Token_T.Type)token_type)
+            if (parser.current_token.type == token_type)
             {
                 parser.current_token = Lexer_get_next_token(ref parser.lexer);
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 32)");
             }
             else
             {
-                Console.WriteLine("Token " + parser.current_token.value + " inatendu" + (int) parser.current_token.type);
+                Console.WriteLine("Token " + parser.current_token.value + " inatendu type " + (int) parser.current_token.type);
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 37)");
             }
         }
@@ -54,7 +54,7 @@ namespace shiboxos.Ssharp.src
                 case Token_T.Type.Token_ID:
                     return parser_parse_id(ref parser);
                 default:
-                    return parser_parse_id(ref parser);
+                    return new();
             }
         }
         public static AST_T parser_parse_statements(ref parser_T parser)
@@ -66,14 +66,14 @@ namespace shiboxos.Ssharp.src
             AST_T ast_statement = parser_parse_statement(ref parser);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 67)");
             k.mDebugger.Send("ast_statement = " + ((int) ast_statement.type));
-            compound.compound_value[0] = ast_statement;
+            compound.compound_value = new AST_T[] { ast_statement };
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 66)");
             compound.compound_size += 1;
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 68)");
             while (parser.current_token.type != Token_T.Type.Token_SEMI)
             {
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 70)");
-                parser_eat(ref parser, (int) Token_T.Type.Token_SEMI);
+                parser_eat(ref parser, Token_T.Type.Token_SEMI);
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 73)");
                 ast_statement = parser_parse_statement(ref parser);
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 75)");
@@ -109,7 +109,7 @@ namespace shiboxos.Ssharp.src
             char[] token_value = parser.current_token.value.ToCharArray();
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 107)");
             
-            parser_eat(ref parser,(int) Token_T.Type.Token_ID);
+            parser_eat(ref parser, Token_T.Type.Token_ID);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 109)");
 
             if (parser.current_token.type == Token_T.Type.Token_LPARENT)
@@ -126,15 +126,15 @@ namespace shiboxos.Ssharp.src
         }
         public static AST_T parser_parse_variable_definition(ref parser_T parser)
         {
-            parser_eat(ref parser, (int)Token_T.Type.Token_ID);
+            parser_eat(ref parser, Token_T.Type.Token_ID);
             k.mDebugger.Send("Creation du Token de Type Identifier");
             
             char[] variable_definition_name = parser.current_token.value.ToCharArray();
             k.mDebugger.Send("Affectation du Nom " + parser.current_token.value + " pour l'Identifier");
             
-            parser_eat(ref parser, (int)Token_T.Type.Token_ID);
+            parser_eat(ref parser, Token_T.Type.Token_ID);
             
-            parser_eat(ref parser, (int)Token_T.Type.Token_EQUALS);
+            parser_eat(ref parser, Token_T.Type.Token_EQUALS);
             k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 128)");
             
             AST_T variable_definition_value = parser_parse_expr(ref parser);
@@ -153,7 +153,7 @@ namespace shiboxos.Ssharp.src
         }
         public static AST_T parser_parse_id(ref parser_T parser)
         {
-            if((parser.current_token.value.ToLower() == "var") == false)
+            if(parser.current_token.value.ToLower() != "var")
             {
                 k.mDebugger.Send("REUSSI (file: Parser.cs, ligne: 142)");
                 return parser_parse_variable_definition(ref parser);
