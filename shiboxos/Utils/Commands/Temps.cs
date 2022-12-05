@@ -15,7 +15,7 @@ namespace shiboxos.Utils.Commands
         }
         public override void Execute(string[] args = null)
         {
-            Console.WriteLine(Time.getTime("ss:mm:hh"));
+            Console.WriteLine(Time.getTime("hh:mm:ss"));
         }
     }
 }
