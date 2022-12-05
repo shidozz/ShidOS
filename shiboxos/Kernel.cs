@@ -62,7 +62,7 @@ namespace shiboxos
             //windows = true;
             CommandHandler.init();
             CommandHandler.execute("clear");
-
+            Directory.SetCurrentDirectory(@"0:\");
 
         }
 
@@ -75,7 +75,7 @@ namespace shiboxos
                 if (!windows)
                 {
                     isInitialized = false;
-                    Console.Write("> ");
+                    Console.Write(Directory.GetCurrentDirectory() + " > ");
                     string input = Console.ReadLine();
                     string[] inputs = input.Split(" ");
                     string cmd = inputs[0];

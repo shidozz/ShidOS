@@ -28,6 +28,12 @@ namespace shiboxos.Utils
             mkdir Mkdir = new();
             Commands.Add(Mkdir);
 
+            mkfile Mkfile = new();
+            Commands.Add(Mkfile);
+
+            CurrentDirectory currentDirectory = new();
+            Commands.Add(currentDirectory);
+
             Date date = new();
             Commands.Add(date);
 

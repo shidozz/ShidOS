@@ -8,27 +8,27 @@ using shiboxos.Utils;
 using static shiboxos.Kernel;
 namespace shiboxos.Utils.Commands
 {
-    public class mkdir : ICommand
+    public class CurrentDirectory : ICommand
     {
-        public mkdir()
+        public CurrentDirectory()
         {
-            Name = "mkdir";
-            Description = "Creer Un Dossier/Repertoire";
+            Name = "cd";
+            Description = "Change de dossier";
         }
         public override void Execute(string[] args = null)
         {
             args[0] = args[0].Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\").Replace("/", @"\");
             
-            if (fs.fs.GetDirectory(@args[0]) == null)
+            if (fs.fs.GetDirectory(@args[0]) != null)
             {
-                fs.fs.CreateDirectory(@args[0]);
-                Console.WriteLine("Le dossier \"" + args[0] + "\" vient d'etre creer !");
+                Directory.SetCurrentDirectory(@args[0]);
+                Console.WriteLine("Le repertoire viens de changer pour \"" + args[0] + "\" !");
                 return;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Le dossier \"" + @args[0] + "\" existe déjà !");
+                Console.WriteLine("Le repertoire \"" + @args[0] + "\" n'existe pas !");
                 Console.ForegroundColor = ConsoleColor.White;
                 return;
             }
