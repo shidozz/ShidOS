@@ -34,6 +34,7 @@ namespace shiboxos.Ssharp.src
             }
             else
             {
+                parser.current_token = Lexer_get_next_token(ref parser.lexer);
                 Console.WriteLine("Token.Inatendu(Value: " + parser.current_token.value + ",Type: " + (int) parser.current_token.type + ")");
             }
         }
@@ -55,7 +56,6 @@ namespace shiboxos.Ssharp.src
         public static AST_T parser_parse_statements(ref parser_T parser)
         {
             AST_T compound = init_ast(AST_T.Type.AST_COMPOUND);
-            compound.compound_value = new AST_T[] { };
             AST_T ast_statement = parser_parse_statement(ref parser);
             k.mDebugger.Send("ast_statement = " + ((int) ast_statement.type));
             compound.compound_value = new AST_T[] { ast_statement };
@@ -71,13 +71,25 @@ namespace shiboxos.Ssharp.src
         }
         public static AST_T parser_parse_expr(ref parser_T parser)
         {
-
+            switch (parser.current_token.type)
+            {
+                case Token_T.Type.Token_STRING:
+                    return parser_parse_string(ref parser);
+                    
+            }
             return new();
         }
         public static AST_T parser_parse_factor(ref parser_T parser)
         {
 
             return new();
+        }
+        public static AST_T parser_parse_string(ref parser_T parser)
+        {
+            AST_T ast_string = init_ast(AST_T.Type.AST_STRING);
+            ast_string.string_value = parser.current_token.value.ToCharArray();
+            parser_eat(ref parser, Token_T.Type.Token_STRING);
+            return ast_string;
         }
         public static AST_T parser_parse_term(ref parser_T parser)
         {
@@ -125,7 +137,7 @@ namespace shiboxos.Ssharp.src
         }
         public static AST_T parser_parse_id(ref parser_T parser)
         {
-            if(parser.current_token.value.ToLower() != "var")
+            if(parser.current_token.value.ToLower() == "var")
             {
                 return parser_parse_variable_definition(ref parser);
             }
@@ -133,11 +145,6 @@ namespace shiboxos.Ssharp.src
             {
                 return parser_parse_variable(ref parser);
             }
-        }
-        public static AST_T parser_parse_string(ref parser_T parser)
-        {
-
-            return new();
         }
     }
 }

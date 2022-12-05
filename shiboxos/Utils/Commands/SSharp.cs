@@ -7,13 +7,21 @@ using static shiboxos.Ssharp.src.Lexer;
 using static shiboxos.Ssharp.src.Token;
 using static shiboxos.Ssharp.src.Parser;
 using static shiboxos.Ssharp.src.AST;
-namespace shiboxos.Ssharp.src
+using Console = System.Console;
+
+namespace shiboxos.Utils.Commands
 {
-    internal class main
+    internal class SSharp : ICommand
     {
-        public static void Start()
+        public SSharp()
+        {
+            Name = "SSharp";
+            Description = "ShidozzSharp Est Un Langage De Programmation Orientee System D'Exploitation";
+        }
+        public override void Execute(string[] args = null)
         {
             lexer_T lexer = Init_lexer("var name = salam;");
+
             Token_T token = Init_Void_Token();
             /*while ((token = Lexer_get_next_token(ref lexer)).type != Token_T.Type.Token_OEF)
             {
@@ -28,11 +36,9 @@ namespace shiboxos.Ssharp.src
                 }
             }*/
             parser_T parser = init_parser(ref lexer);
-            k.mDebugger.Send("REUSSI (file: Main.cs ligne: 36)");
             AST_T root = parser_parse(ref parser);
-            k.mDebugger.Send("REUSSI (file: Main.cs ligne: 38)");
-            Console.WriteLine("root: " + (int) root.type);
-            k.mDebugger.Send("REUSSI (file: Main.cs ligne: 40)");
+            Console.WriteLine("root: " + (int)root.type);
+            Console.WriteLine("size: " + (int)root.compound_size);
         }
 
 

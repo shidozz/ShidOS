@@ -18,12 +18,13 @@
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
         <VMWareEdition>Player</VMWareEdition>
-        <CompressionType>None</CompressionType>
+        <CompressionType>Gzip</CompressionType>
         <RemoveBootDebugOutput>False</RemoveBootDebugOutput>
-        <ExtractMapFile>True</ExtractMapFile>
-        <DebugEnabled>True</DebugEnabled>
+        <ExtractMapFile>False</ExtractMapFile>
+        <DebugEnabled>False</DebugEnabled>
         <BinFormat>Elf</BinFormat>
         <CompileVBEMultiboot>False</CompileVBEMultiboot>
+        <VBEResolution>1280x720x32</VBEResolution>
     </PropertyGroup>
 
     <ItemGroup>
@@ -47,8 +48,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="App\SWeb\Data\" />
-      <Folder Include="App\SWeb\Protocols\" />
+      <Folder Include="Gui\" />
     </ItemGroup>
 
 </Project>
